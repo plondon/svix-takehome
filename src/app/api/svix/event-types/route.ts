@@ -1,4 +1,3 @@
-import { Svix } from "svix";
 import { svix } from "../utils";
 
 export async function POST(request: Request) {
