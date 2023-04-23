@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const CreateEventTypePage = () => {
   const [name, setName] = useState("");
@@ -61,7 +62,7 @@ const CreateEventTypePage = () => {
   };
 
   const handleUserKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && e.metaKey) {
+    if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
       handleEventTypeCreate();
     }
@@ -70,11 +71,14 @@ const CreateEventTypePage = () => {
   return (
     <Box>
       <Heading as="h1" size="md" mb={4}>
-        Create Event Type
+        <Link style={{ textDecoration: "underline" }} href={"/event-types"}>
+          Event Types
+        </Link>
+        {` > Create`}
       </Heading>
 
       <form onSubmit={handleEventTypeCreate}>
-        <Box>
+        <Box width="50%">
           <Input
             value={name}
             onChange={(event) => setName(event.target.value)}

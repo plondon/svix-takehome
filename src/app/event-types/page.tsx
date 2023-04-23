@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { EventTypeOut, Svix } from "svix";
 import { useRouter } from "next/navigation";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 
 const EventTypesPage = () => {
@@ -73,6 +73,42 @@ const EventTypesPage = () => {
     fetchEventTypes();
   }, [iterator, toast]);
 
+  const handleDeleteEventType = async (name: string) => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete event type ${name}?`
+    );
+    if (!confirm) return;
+    try {
+      const result = await fetch(`/api/svix/event-types/${name}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!result.ok) {
+        throw await result.json();
+      }
+      setEventTypes(eventTypes.filter((eventType) => eventType.name !== name));
+    } catch (error) {
+      const svixError = error as SvixErrorType["detail"];
+      const message =
+        typeof svixError === "string" ? svixError : svixError[0].msg;
+      toast({
+        title: "Error",
+        description: (
+          <>
+            <span>Failed to delete event type.</span>
+            <br />
+            <span> Response: {message}</span>
+          </>
+        ),
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box>
       <Heading
@@ -109,6 +145,7 @@ const EventTypesPage = () => {
               <Tr background="gray.200">
                 <Th>Name</Th>
                 <Th>Description</Th>
+                <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -125,6 +162,18 @@ const EventTypesPage = () => {
                 >
                   <Td fontSize={"sm"}>{eventType.name}</Td>
                   <Td fontSize={"sm"}>{eventType.description}</Td>
+                  <Td display={"flex"} justifyContent={"flex-end"}>
+                    <Button
+                      size="xs"
+                      colorScheme="red"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteEventType(eventType.name);
+                      }}
+                    >
+                      <MinusIcon />
+                    </Button>
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
@@ -132,8 +181,8 @@ const EventTypesPage = () => {
           <Flex gap={2} mt={4} justifyContent={"end"}>
             <Button
               disabled={!prevIterator}
-              size={"sm"}
-              colorScheme="blue"
+              size={"xs"}
+              colorScheme='blackAlpha'
               onClick={() => {
                 setIterator(prevIterator);
               }}
@@ -142,8 +191,8 @@ const EventTypesPage = () => {
             </Button>
             <Button
               disabled={isDone}
-              size={"sm"}
-              colorScheme="blue"
+              size={"xs"}
+              colorScheme='blackAlpha'
               onClick={() => {
                 setIterator(nextIterator);
               }}

@@ -13,3 +13,18 @@ export async function GET(
     return new Response(JSON.stringify(svixError.detail), { status: e.code });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  context: { params: { name: string } }
+) {
+  const { name } = context.params;
+
+  try {
+    await svix.eventType.delete(name);
+    return new Response(JSON.stringify({}), { status: 200 });
+  } catch (e: any) {
+    const svixError = e.body as SvixErrorType;
+    return new Response(JSON.stringify(svixError.detail), { status: e.code });
+  }
+}
