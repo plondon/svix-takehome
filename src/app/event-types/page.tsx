@@ -13,9 +13,9 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import { EventTypeOut, Svix } from "svix";
+import { EventTypeOut } from "svix";
 import { useRouter } from "next/navigation";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 
 const EventTypesPage = () => {
@@ -24,6 +24,7 @@ const EventTypesPage = () => {
   const [iterator, setIterator] = useState<string | null>(null);
   const [nextIterator, setNextIterator] = useState<string | null>(null);
   const [prevIterator, setPrevIterator] = useState<string | null>(null);
+  const [firstEventType, setFirstEventType] = useState<string | null>(null);
   const [isDone, setIsDone] = useState<boolean>(false);
   const toast = useToast();
   const router = useRouter();
@@ -48,6 +49,13 @@ const EventTypesPage = () => {
         setNextIterator(data.iterator);
         setPrevIterator(data.prevIterator);
         setIsDone(data.done);
+        if (!firstEventType && !iterator) {
+          setFirstEventType(data.data[0].name);
+        }
+        if (firstEventType === data.data[0].name || !iterator) {
+          setPrevIterator(null);
+          setIsDone(false);
+        }
       } catch (error) {
         const svixError = error as SvixErrorType["detail"];
         const message =
@@ -164,14 +172,15 @@ const EventTypesPage = () => {
                   <Td fontSize={"sm"}>{eventType.description}</Td>
                   <Td display={"flex"} justifyContent={"flex-end"}>
                     <Button
+                      ml="2"
                       size="xs"
                       colorScheme="red"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeleteEventType(eventType.name);
+                        handleDeleteEventType(eventType?.name!);
                       }}
                     >
-                      <MinusIcon />
+                      Delete
                     </Button>
                   </Td>
                 </Tr>
@@ -180,9 +189,9 @@ const EventTypesPage = () => {
           </Table>
           <Flex gap={2} mt={4} justifyContent={"end"}>
             <Button
-              disabled={!prevIterator}
+              isDisabled={!prevIterator}
               size={"xs"}
-              colorScheme='blackAlpha'
+              colorScheme="blackAlpha"
               onClick={() => {
                 setIterator(prevIterator);
               }}
@@ -190,9 +199,9 @@ const EventTypesPage = () => {
               Prev
             </Button>
             <Button
-              disabled={isDone}
+              isDisabled={isDone}
               size={"xs"}
-              colorScheme='blackAlpha'
+              colorScheme="blackAlpha"
               onClick={() => {
                 setIterator(nextIterator);
               }}
