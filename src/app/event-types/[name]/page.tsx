@@ -48,7 +48,7 @@ const EventTypePage = ({ params }: { params: { name: string } }) => {
     };
 
     fetchEventType();
-  }, []);
+  }, [params.name]);
 
   const handleDescriptionChange = async () => {
     if (!descriptionRef.current) throw new Error("Missing new description.");
