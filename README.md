@@ -1,7 +1,7 @@
 ### Some notes for the Svix team reviewing this project
 - View Preview: [https://svix.fly.dev](https://svix.fly.dev)
 
-- Emotion (dep of Chakra) is [not supported](https://github.com/vercel/next.js/issues/41994#issuecomment-1506547308) in Next.js 13 [server components](https://beta.nextjs.org/docs/rendering/server-and-client-components). I used Next.js 13 because I wanted to try out the new pattern, but in hindsight I should have used Next.js 12.
+- Emotion (dep of Chakra) is [not supported](https://github.com/vercel/next.js/issues/41994#issuecomment-1506547308) in Next.js 13 [server components](https://beta.nextjs.org/docs/rendering/server-and-client-components). I used Next.js 13 because I wanted to try out the new routes pattern + suspense on the FE, but in hindsight I should have stuck with Next.js 12.
 - I would spend more time on pagination, deletion should be improved
 - I would add react-testing-library and jest for testing
 
